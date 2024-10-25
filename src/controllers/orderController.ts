@@ -24,6 +24,7 @@ export const postNewOrder = async (
             tax,
             shippingCharge,
             discount,
+            subtotal,
             total
         } = req.body;
 
@@ -51,7 +52,7 @@ export const postNewOrder = async (
         }
 
         // Place the order only if all checks are passed
-        const [newOrder] = await OrderModel.create(
+        const [order] = await OrderModel.create(
             [{
                 shippingInfo,
                 billingInfo,
@@ -59,6 +60,7 @@ export const postNewOrder = async (
                 tax,
                 shippingCharge,
                 discount,
+                subtotal,
                 total
             }],
             { session }
@@ -72,13 +74,13 @@ export const postNewOrder = async (
             order: true,
             admin: true,
             userId: billingInfo.userId,
-            productId: [newOrder.orderedItems.map(item => String(item.productId))]
+            productId: [order.orderedItems.map(item => String(item.productId))]
         });
 
         return res.status(201).json({
             success: true,
             message: "Order placed successfully",
-            data: newOrder
+            order
         });
 
     } catch (error) {
@@ -105,16 +107,16 @@ export const getMyOrders = async (
             return next(new ErrorHandler("User ID is required", 400));
         }
 
-        const key = `my-orders${id}`;
-        let orders = [];
+        // const key = `my-orders${id}`;
+        // let orders = [];
 
-        if (dataCaching.has(key)) {
-            orders = JSON.parse(dataCaching.get(key) as string);
-        } else {
+        // if (dataCaching.has(key)) {
+            // orders = JSON.parse(dataCaching.get(key) as string);
+        // } else {
             // Query based on billingInfo.userId
-            orders = await OrderModel.find({ "billingInfo.userId": id });
-            dataCaching.set(key, JSON.stringify(orders));
-        }
+            const orders = await OrderModel.find({ "billingInfo.userId": id });
+            // dataCaching.set(key, JSON.stringify(orders));
+        // }
 
         if (orders.length < 1) {
             return next(new ErrorHandler("You haven't made any orders yet", 404));
@@ -124,7 +126,7 @@ export const getMyOrders = async (
             success: true,
             message: `Order history retrieved successfully`,
             totalOrder: orders.length,
-            data: orders,
+            orders,
         });
     } catch (error) {
         console.log("Error is", error);
@@ -148,11 +150,15 @@ export const getAllOrders = async (
             dataCaching.set("all-orders", JSON.stringify(orders))
         }
 
+        if (orders.length < 1) {
+            return next(new ErrorHandler("There's no transaction yet", 404));
+        }
+
         res.status(200).json({
             success: true,
             message: `All orders history retrieved successfully`,
             totalOrder: orders.length,
-            data: orders
+            orders
         })
     } catch (error) {
         console.log("err is", error)
@@ -183,7 +189,7 @@ export const getSingleOrder = async (
         res.status(200).json({
             success: true,
             message: "Order details retrieved successfully",
-            data: order
+            order
         })
     } catch (error) {
         console.log("er......", error)
@@ -229,10 +235,11 @@ export const processOrder = async (
         res.status(200).json({
             success: true,
             message: "Order processed successfully",
-            data: order
+            order
         })
 
     } catch (error) {
+        console.log("err is:", error)
         return next(new ErrorHandler("Failed to process the order", 400))
     }
 }
@@ -261,7 +268,7 @@ export const deleteOrder = async (
         res.status(200).json({
             success: true,
             message: "Order deleted Successfully",
-            data: order
+            order
         })
     } catch (error) {
         console.log("dlt err is:", error)

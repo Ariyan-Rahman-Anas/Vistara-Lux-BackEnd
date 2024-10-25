@@ -152,6 +152,10 @@ export const getAdminProducts = async (
         // })
         const products = await ProductModel.find({})
 
+        if (products.length < 1) {
+            return next(new ErrorHandler("Right now, no products in VistaraLux", 404));
+        }
+
         return res.status(200).json({
             success: true,
             message: "Admin products retrieved successfully",

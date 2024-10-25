@@ -246,7 +246,7 @@ export const loginUser = async (
         // Verify the provided password with the stored hashed password
         const isValidPassword = await bcrypt.compare(password, isUserExist.password);
         if (!isValidPassword) {
-            return next(new ErrorHandler("Oops! You've entered password", 401));
+            return next(new ErrorHandler("Oops! You've entered incorrect password", 401));
         }
 
 

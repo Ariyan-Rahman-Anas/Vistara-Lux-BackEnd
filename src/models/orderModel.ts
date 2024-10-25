@@ -51,6 +51,10 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    subtotal: {
+        type: Number,
+        required: true,
+    },
     total: {
         type: Number,
         required: true
@@ -65,7 +69,6 @@ const orderSchema = new mongoose.Schema({
         photo: String,
         price: Number,
         quantity: Number,
-        subtotal: Number,
         productId: {
             type: mongoose.Types.ObjectId,
             ref: "product"
