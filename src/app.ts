@@ -28,18 +28,13 @@ export const dataCaching = new NodeCache()
 const app = express();
 
 app.use(cors({
-    origin: "https://vistaralux.vercel.app",
+    // origin: "https://vistaralux.vercel.app",
+    // origin: "http://localhost:5173",
+    // origin: ["http://localhost:5173", "https://vistaralux.vercel.app"],
+    origin: ["https://vistaralux.vercel.app", "http://localhost:5173" ],
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     credentials: true
 }))
-
-// app.use(
-//     cors({
-//         // origin: "https://vistaralux.vercel.app",
-//         origin:  "http://localhost:5173",
-//         credentials: true, // Allow credentials (cookies) to be sent
-//     })
-// );
 
 
 app.use(express.json());
