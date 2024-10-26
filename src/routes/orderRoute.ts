@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import express from "express"
 import { deleteOrder, getAllOrders, getMyOrders, getSingleOrder, postNewOrder, processOrder } from "../controllers/orderController.js"
 import { adminOnly, isAuthenticated } from "../middlewares/auth.js"

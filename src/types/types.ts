@@ -82,7 +82,7 @@ export type invalidateCacheProps = {
     order?: boolean
     admin?: boolean
     userId?: string
-    productId:string | string[]
+    productId:string[]
     orderId?: string
 }
 
@@ -120,6 +120,7 @@ export interface NewOrderReqBody{
     tax: number
     shippingCharge: number
     discount: number
+    subtotal: number
     total: number
     status: string
     orderedItems:OrderedItemType[]

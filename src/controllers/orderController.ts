@@ -69,13 +69,13 @@ export const postNewOrder = async (
         await session.commitTransaction(); // Commit transaction
         session.endSession();
 
-         invalidateCache({
-            product: true,
-            order: true,
-            admin: true,
-            userId: billingInfo.userId,
-            productId: [order.orderedItems.map(item => String(item.productId))]
-        });
+        // invalidateCache({
+        //     product: true,
+        //     order: true,
+        //     admin: true,
+        //     userId: billingInfo.userId,
+        //     productId: [order?.orderedItems?.map(item => String(item.productId))]
+        // });
 
         return res.status(201).json({
             success: true,
@@ -111,11 +111,11 @@ export const getMyOrders = async (
         // let orders = [];
 
         // if (dataCaching.has(key)) {
-            // orders = JSON.parse(dataCaching.get(key) as string);
+        // orders = JSON.parse(dataCaching.get(key) as string);
         // } else {
-            // Query based on billingInfo.userId
-            const orders = await OrderModel.find({ "billingInfo.userId": id });
-            // dataCaching.set(key, JSON.stringify(orders));
+        // Query based on billingInfo.userId
+        const orders = await OrderModel.find({ "billingInfo.userId": id });
+        // dataCaching.set(key, JSON.stringify(orders));
         // }
 
         if (orders.length < 1) {
@@ -142,13 +142,14 @@ export const getAllOrders = async (
     next: NextFunction
 ) => {
     try {
-        let orders = []
-        if (dataCaching.has("all-orders")) orders = JSON.parse(dataCaching.get("all-orders") as string)
 
-        else {
-            orders = await OrderModel.find().populate("billingInfo.userId")
-            dataCaching.set("all-orders", JSON.stringify(orders))
-        }
+        // let orders = []
+        // if (dataCaching.has("all-orders")) orders = JSON.parse(dataCaching.get("all-orders") as string)
+
+        // else {
+          const orders = await OrderModel.find().populate("billingInfo.userId")
+            // dataCaching.set("all-orders", JSON.stringify(orders))
+        // }
 
         if (orders.length < 1) {
             return next(new ErrorHandler("There's no transaction yet", 404));
@@ -224,13 +225,13 @@ export const processOrder = async (
 
         await order.save()
 
-         invalidateCache({
-            product: false,
-            order: true,
-            admin: true,
-            userId: order.billingInfo?.userId,
-            orderId: [String(order._id)]
-        });
+        // invalidateCache({
+        //     product: false,
+        //     order: true,
+        //     admin: true,
+        //     userId: order.billingInfo?.userId,
+        //     orderId: [String(order._id)]
+        // });
 
         res.status(200).json({
             success: true,
@@ -250,20 +251,21 @@ export const processOrder = async (
 export const deleteOrder = async (
     req: Request,
     res: Response,
-    next:NextFunction
+    next: NextFunction
 ) => {
     try {
         const { id } = req.params
         const order = await OrderModel.findById(id)
         if (!order) return next(new ErrorHandler("Order not found", 404))
         await order.deleteOne()
-        invalidateCache({
-            product: false,
-            order: true,
-            admin: true,
-            userId: order.billingInfo?.userId,
-            orderId: [String(order._id)]
-        });
+        
+        // invalidateCache({
+        //     product: false,
+        //     order: true,
+        //     admin: true,
+        //     userId: order.billingInfo?.userId,
+        //     orderId: [String(order._id)]
+        // });
 
         res.status(200).json({
             success: true,

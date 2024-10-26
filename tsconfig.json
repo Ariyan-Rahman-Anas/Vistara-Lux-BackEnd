@@ -10,6 +10,7 @@
     "skipLibCheck": true, // Skips type checking of library declaration files
     "strict": false, // Disable strict type checking
     "forceConsistentCasingInFileNames": false, // Avoids case-sensitive issues
-    "isolatedModules": true // Ensures safe transpilation
+    "isolatedModules": true, // Ensures safe transpilation
+    // "suppressImplicitAnyIndexErrors": true
   }
 }

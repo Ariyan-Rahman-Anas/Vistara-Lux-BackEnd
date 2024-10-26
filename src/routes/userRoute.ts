@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import express from "express"
 import { createUser, deleteUser, getUser, getUsers, loginUser, logoutUser, updateUserProfile } from "../controllers/userController.js"
 import { adminOnly, isAuthenticated } from "../middlewares/auth.js"

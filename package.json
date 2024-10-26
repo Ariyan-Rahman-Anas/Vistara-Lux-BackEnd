@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node dist/app.js",
-     "build": "tsc --project tsconfig.json",
+    "build": "tsc --skipLibCheck --noEmitOnError",
     "watch": "tsc -w",
     "dev": "nodemon dist/app.js"
   },

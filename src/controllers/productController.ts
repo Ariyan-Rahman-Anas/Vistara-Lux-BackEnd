@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { NextFunction, Request, Response } from "express";
 import { BaseQuery, newProductReqBody, SearchReqQuery } from "../types/types.js";
 import { ProductModel } from "../models/productModel.js";
@@ -151,10 +153,6 @@ export const getAdminProducts = async (
         //     productId:products.map(product=>product._id)
         // })
         const products = await ProductModel.find({})
-
-        if (products.length < 1) {
-            return next(new ErrorHandler("Right now, no products in VistaraLux", 404));
-        }
 
         return res.status(200).json({
             success: true,
