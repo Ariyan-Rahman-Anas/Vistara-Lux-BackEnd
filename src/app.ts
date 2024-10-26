@@ -44,11 +44,18 @@ app.use(morgan("dev"))
 
 // Root route
 app.get("/", (req: Request, res: Response) => {
+    // res.status(200).json({
+    //     success: true,
+    //     message: "Server is running perfectly on... /api/v1"
+    // });
     res.status(200).json({
         success: true,
-        message: "Server is running perfectly on... /api/v1"
+        message: "Server is running perfectly.",
+        availableRoutes: ["/api/v1/user", "/api/v1/product", "/api/v1/order", "/api/v1/payment", "/api/v1/admin"]
     });
 });
+
+
 
 // Use routes
 app.use("/api/v1/user", userRouter);
