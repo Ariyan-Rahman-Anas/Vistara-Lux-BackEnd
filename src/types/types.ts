@@ -20,6 +20,7 @@ export interface loginUserReqBody {
 // product types
 export interface newProductReqBody {
     name: string;
+    brand: string;
     category: string;
     description: string;
     price: number;

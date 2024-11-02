@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import { trim } from "validator";
-
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -9,7 +7,7 @@ const productSchema = new mongoose.Schema({
     category: {
         type: String,
         required: [true, "Please enter product category"],
-        trim:true
+        trim: true
     },
     brand: {
         type: String,
@@ -28,7 +26,7 @@ const productSchema = new mongoose.Schema({
         {
             public_id: {
                 type: String,
-                required:[true, "Please enter public Id"]
+                required: [true, "Please enter public Id"]
             },
             url: {
                 type: String,
@@ -39,13 +37,12 @@ const productSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: [true, "Please enter product stock"],
-        max: [9999, "Stock cannot exceed 4 digits"], 
+        max: [9999, "Stock cannot exceed 4 digits"],
         default: 1,
     },
     user: {
-        type: String, 
+        type: String,
         required: true,
     },
 }, { timestamps: true, versionKey: false });
-
 export const ProductModel = mongoose.model("product", productSchema);
