@@ -40,7 +40,7 @@ export const dataCaching = new NodeCache();
 const app = express();
 
 app.use(cors({
-    origin: ["https://vistaralux.vercel.app", "http://localhost:5173"],
+    origin: ["https://vistaralux.vercel.app", "http://localhost:5175"],
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     credentials: true
 }));
