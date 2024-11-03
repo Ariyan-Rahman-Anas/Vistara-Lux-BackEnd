@@ -41,7 +41,7 @@ const app = express();
 
 app.use(cors({
     // origin:"*",
-    origin: ["https://vistaralux.vercel.app", "http://localhost:5176"],
+    origin: ["https://vistaralux.vercel.app", "http://localhost:5173"],
     // origin: "http://localhost:5176",
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     credentials: true
