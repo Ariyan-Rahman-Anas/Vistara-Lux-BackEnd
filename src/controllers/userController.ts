@@ -6,59 +6,6 @@ import ErrorHandler from "../utils/errorHandler.js";
 import { generateToken } from "../utils/generateToken.js";
 
 // user registration
-// export const createUser = async (
-//     req: Request<{}, {}, createNewUserReqBody>,
-//     res: Response,
-//     next: NextFunction
-// ) => {
-//     try {
-//         const { _id, name, email, password, photo, gender, dob } = req.body;
-
-//         // Check if all required fields are provided
-//         if (!_id || !name || !email || !password || !photo || !gender || !dob) {
-//             return next(new ErrorHandler("Please fill all fields", 400));
-//         }
-
-//         // Check if the user already exists with _id
-//         const isDuplicate_Id = await UserModel.findById({ _id })
-//         if (isDuplicate_Id) {
-//             return next(new ErrorHandler(`Duplicate user Id`, 409))
-//         }
-
-//         // Check if the user already exists with email
-//         const isUserAlreadyExist = await UserModel.findOne({ email });
-//         if (isUserAlreadyExist) {
-//             return next(new ErrorHandler(`You're already registered with ${email}, please log in`, 409));
-//         }
-
-//         // Validate password length manually before hashing password
-//         if (password.length < 6) {
-//             return next(new ErrorHandler("Password must be at least 6 characters long", 400))
-//         }
-
-//         //hashing password
-//         const hashedPassword = await bcrypt.hash(password, 10)
-
-//         // Create new user if not exists
-//         const createNewUser = await UserModel.create({
-//             _id,
-//             name,
-//             email,
-//             password:hashedPassword,
-//             photo,
-//             gender,
-//             dob: new Date(dob)
-//         });
-
-//         res.status(201).json({
-//             success: true,
-//             message: `Welcome, ${createNewUser.name}`
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
 export const createUser = async (
     req: Request<{}, {}, createNewUserReqBody>,
     res: Response,
@@ -226,8 +173,6 @@ export const updateUserProfile = async (
 
 
 
-
-
 // User Login 
 export const loginUser = async (
     req: Request<{}, {}, loginUserReqBody>,
@@ -248,7 +193,6 @@ export const loginUser = async (
         if (!isValidPassword) {
             return next(new ErrorHandler("Oops! You've entered incorrect password", 401));
         }
-
 
         // Generate and set JWT token
         const token = generateToken(res, {_id: isUserExist._id, email:isUserExist.email } );
