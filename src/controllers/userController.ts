@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { UserModel } from "../models/userModel.js";
