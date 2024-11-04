@@ -63,10 +63,12 @@ export const generateToken = (res: Response, payload: JwtPayload) => {
     // Set the cookie options
     res.cookie("accessToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Use secure cookies only in production
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Adjust sameSite for cross-origin setups
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: "/",
+        secure: true,
+        // secure: process.env.NODE_ENV === "production", 
+        // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
+        sameSite: "none", 
+        maxAge: 7 * 24 * 60 * 60 * 1000, 
+        // path: "/",
     });
 
     return token;

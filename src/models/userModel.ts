@@ -76,10 +76,16 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please enter a password"],
         minLength: [6, "Password must be at least 6 characters"]
     },
-    photo: {
-        type: String,
-        default: "" // Set default to empty string
-    },
+    photo: [
+        {
+            public_id: {
+                type: String,
+            },
+            url: {
+                type: String,
+            }
+        }
+    ],
     role: {
         type: String,
         enum: ["admin", "user"],
@@ -87,7 +93,7 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        enum: ["male", "female"],
+        enum: ["male", "female","third"],
         default: null // Set default to null or undefined
     },
     dob: {

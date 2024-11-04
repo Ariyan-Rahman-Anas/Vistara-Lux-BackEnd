@@ -4,6 +4,8 @@ import { UserModel } from "../models/userModel.js";
 import { createNewUserReqBody, loginUserReqBody } from "../types/types.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { generateToken } from "../utils/generateToken.js";
+import { deleteFromCloudinary } from "../utils/deleteFromCloudinary.js";
+import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js";
 
 // user registration
 export const createUser = async (
@@ -68,7 +70,6 @@ export const createUser = async (
 // ) => {
 //     try {
 //         const { id } = req.params;
-//         const {name, photo, gender, dob } = req.body;
 
 //         // Find the user by ID
 //         const user = await UserModel.findById(id);
@@ -77,10 +78,10 @@ export const createUser = async (
 //         }
 
 //         // Update fields if provided
-//         if (name) user.name = name;
-//         if (photo) user.photo = photo;
-//         if (gender) user.gender = gender;
-//         if (dob) user.dob = new Date(dob);
+//         if (req.body.name) user.name = req.body.name;
+//         if (req.file) user.photo = req.file.path; // Save the photo path
+//         if (req.body.gender) user.gender = req.body.gender;
+//         if (req.body.dob) user.dob = new Date(req.body.dob);
 
 //         // Save updated user
 //         await user.save();
@@ -88,56 +89,13 @@ export const createUser = async (
 //         res.status(200).json({
 //             success: true,
 //             message: "Profile updated successfully",
-//             data: user
+//             user,
 //         });
 //     } catch (error) {
 //         next(error);
 //     }
 // };
 
-// export const updateUserProfile = async (
-//     req: Request,
-//     res: Response,
-//     next: NextFunction
-// ) => {
-//     try {
-//         const { id } = req.params;
-//         console.log("iddddddd", id)
-//         const { name, photo, gender, dob } = req.body;
-//         console.log(req.body)
-
-//         // Update user fields
-//         const updatedUser = await UserModel.findByIdAndUpdate(
-//             id,
-//             {
-//                 $set: {
-//                     ...(name && { name }),
-//                     ...(photo && { photo }),
-//                     ...(gender && { gender }),
-//                     ...(dob && { dob: new Date(dob) })
-//                 }
-//             },
-//             { new: true, runValidators: true } // Ensures validation and returns updated document
-//         );
-
-//         if (!updatedUser) {
-//             return next(new ErrorHandler("User not found", 404));
-//         }
-
-//         res.status(200).json({
-//             success: true,
-//             message: "Profile updated successfully",
-//             data: updatedUser
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-// import { Request, Response, NextFunction } from "express";
-// import { UserModel } from "../models/userModel.js";
-// import ErrorHandler from "../utils/errorHandler.js";
-// 
-// Update user profile (using multer to handle form-data and file upload)
 export const updateUserProfile = async (
     req: Request,
     res: Response,
@@ -146,19 +104,38 @@ export const updateUserProfile = async (
     try {
         const { id } = req.params;
 
+        console.log("bodydddddd", req.body)
+        console.log("fileeee", req.file)
+
         // Find the user by ID
         const user = await UserModel.findById(id);
         if (!user) {
-            return next(new ErrorHandler("User not found", 404));
+            return res.status(404).json({ message: "User not found" });
         }
 
-        // Update fields if provided
+        // Check if a new file is uploaded and there is an existing photo
+        if (req.file) {
+            if (user.photo?.public_id) {
+                console.log("Deleting old image with public_id:", user.photo.public_id);
+                await deleteFromCloudinary([user.photo.public_id]); // Delete old image
+            }
+
+            // Upload the new image to Cloudinary
+            const [uploadResult] = await uploadOnCloudinary([req.file]);
+
+            // Update user's photo with the new image's details
+            user.photo = {
+                public_id: uploadResult.public_id,
+                url: uploadResult.url,
+            };
+        }
+
+        // Update other fields if they are provided
         if (req.body.name) user.name = req.body.name;
-        if (req.file) user.photo = req.file.path; // Save the photo path
         if (req.body.gender) user.gender = req.body.gender;
         if (req.body.dob) user.dob = new Date(req.body.dob);
 
-        // Save updated user
+        // Save updated user data
         await user.save();
 
         res.status(200).json({
@@ -167,9 +144,11 @@ export const updateUserProfile = async (
             user,
         });
     } catch (error) {
+        console.error("Error in updateUserProfile:", error); // Additional error logging
         next(error);
     }
 };
+
 
 
 
@@ -288,12 +267,14 @@ export const logoutUser = async (
     res: Response,
     next: NextFunction) => {
     try {
-        res.clearCookie("accessToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/" 
-        })
+        res.clearCookie("accessToken",
+            // {
+            // httpOnly: true,
+            // secure: process.env.NODE_ENV === "production",
+            // sameSite: "lax",
+            // path: "/" 
+            // }
+        )
         // Respond with success message
         res.status(200).json({
             success: true,

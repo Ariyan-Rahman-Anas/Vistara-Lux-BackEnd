@@ -4,6 +4,7 @@ import express from "express"
 import { createUser, deleteUser, getUser, getUsers, loginUser, logoutUser, updateUserProfile } from "../controllers/userController.js"
 import { adminOnly, isAuthenticated } from "../middlewares/auth.js"
 import ErrorHandler from "../utils/errorHandler.js";
+import { singleUpload } from "../middlewares/multer.js";
 
 const router = express.Router()
 
@@ -49,7 +50,7 @@ router.post("/logout-user", isAuthenticated, logoutUser);
 router.get("/all-user", isAuthenticated, adminOnly, getUsers)
 router.route("/:id")
      .get(isAuthenticated, getUser)
-     .put(isAuthenticated, updateUserProfile)
+     .put(isAuthenticated, singleUpload, updateUserProfile)
      .delete(isAuthenticated, adminOnly, deleteUser)
 
 export default router

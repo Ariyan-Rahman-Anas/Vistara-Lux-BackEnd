@@ -27,6 +27,7 @@ declare global {
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies?.accessToken;
+        // console.log("token", token)
 
         if (!token) {
             return next(new ErrorHandler("You need to be logged in to access this resource", 401));
