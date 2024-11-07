@@ -46,7 +46,8 @@ router.get("/check-auth", (req, res, next) => {
 
 router.post("/create-user", createUser )
 router.post("/login-user", loginUser)
-router.post("/logout-user", isAuthenticated, logoutUser);
+// router.post("/logout-user", isAuthenticated, logoutUser);
+router.post("/logout-user", logoutUser);
 router.get("/all-user", isAuthenticated, adminOnly, getUsers)
 router.route("/:id")
      .get(isAuthenticated, getUser)

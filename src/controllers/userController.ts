@@ -268,14 +268,7 @@ export const logoutUser = async (
     res: Response,
     next: NextFunction) => {
     try {
-        res.clearCookie("accessToken",
-            // {
-            // httpOnly: true,
-            // secure: process.env.NODE_ENV === "production",
-            // sameSite: "lax",
-            // path: "/" 
-            // }
-        )
+        res.clearCookie("accessToken")
         // Respond with success message
         res.status(200).json({
             success: true,
