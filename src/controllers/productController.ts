@@ -203,6 +203,7 @@ export const deleteProduct = async (
 
         const ids = product.photos.map(photo => photo.public_id)
         await deleteFromCloudinary(ids)
+        
 
         // Delete the product from the database
         await product.deleteOne();

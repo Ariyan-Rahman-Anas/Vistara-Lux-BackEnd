@@ -62,7 +62,6 @@ export const getDashboardStats = async (
         })
 
 
-
         // order
         const thisMonthOrdersPromise = await OrderModel.find({
             createdAt: {
@@ -397,61 +396,61 @@ export const getLineCharts = async (
         // const key = "admin-line-charts"
 
         // if (dataCaching.has(key)) {
-            // lineCharts = JSON.parse(dataCaching.get(key) as string)
+        // lineCharts = JSON.parse(dataCaching.get(key) as string)
         // } else {
-            const today = new Date()
+        const today = new Date()
 
-            const twelveMonthAgo = new Date()
-            twelveMonthAgo.setMonth(twelveMonthAgo.getMonth() - 12)
+        const twelveMonthAgo = new Date()
+        twelveMonthAgo.setMonth(twelveMonthAgo.getMonth() - 12)
 
-            const baseQuery = {
-                createdAt: {
-                    $gte: twelveMonthAgo,
-                    $lte: today
-                }
+        const baseQuery = {
+            createdAt: {
+                $gte: twelveMonthAgo,
+                $lte: today
             }
+        }
 
-            const [
-                lastTwelveMonthUsers,
-                lastTwelveMonthProducts,
-                lastTwelveMonthOrders
-            ] = await Promise.all([
-                UserModel.find(baseQuery).select("createdAt"),
-                ProductModel.find(baseQuery).select("createdAt"),
-                OrderModel.find(baseQuery).select(["createdAt", "discount", "total"])
-            ])
+        const [
+            lastTwelveMonthUsers,
+            lastTwelveMonthProducts,
+            lastTwelveMonthOrders
+        ] = await Promise.all([
+            UserModel.find(baseQuery).select("createdAt"),
+            ProductModel.find(baseQuery).select("createdAt"),
+            OrderModel.find(baseQuery).select(["createdAt", "discount", "total"])
+        ])
 
-            const usersCount = getChartData({
-                length: 12,
-                today,
-                docArr: lastTwelveMonthUsers,
-            })
-            const productsCount = getChartData({
-                length: 12,
-                today,
-                docArr: lastTwelveMonthProducts
-            })
-            const discount = getChartData({
-                length: 12,
-                today,
-                docArr: lastTwelveMonthOrders,
-                property: "discount"
-            })
-            const revenue = getChartData({
-                length: 12,
-                today,
-                docArr: lastTwelveMonthOrders,
-                property: "total"
-            })
+        const usersCount = getChartData({
+            length: 12,
+            today,
+            docArr: lastTwelveMonthUsers,
+        })
+        const productsCount = getChartData({
+            length: 12,
+            today,
+            docArr: lastTwelveMonthProducts
+        })
+        const discount = getChartData({
+            length: 12,
+            today,
+            docArr: lastTwelveMonthOrders,
+            property: "discount"
+        })
+        const revenue = getChartData({
+            length: 12,
+            today,
+            docArr: lastTwelveMonthOrders,
+            property: "total"
+        })
 
 
-            const lineCharts = {
-                users: usersCount,
-                products: productsCount,
-                discount,
-                revenue
-            }
-            // dataCaching.set(key, JSON.stringify(lineCharts))
+        const lineCharts = {
+            users: usersCount,
+            products: productsCount,
+            discount,
+            revenue
+        }
+        // dataCaching.set(key, JSON.stringify(lineCharts))
         // }
         res.status(200).json({
             success: true,
